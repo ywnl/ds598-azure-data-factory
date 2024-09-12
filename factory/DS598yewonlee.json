@@ -1,0 +1,9 @@
+{
+	"name": "DS598yewonlee",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "f04c10d3-4b11-44e6-a7c3-b739bd49ffbf",
+		"tenantId": "d57d32cc-c121-488f-b07b-dfe705680c71"
+	}
+}
