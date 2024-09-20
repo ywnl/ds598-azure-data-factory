@@ -6,12 +6,6 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"lat": {
-				"type": "float"
-			},
-			"lon": {
-				"type": "string"
-			},
 			"start": {
 				"type": "int"
 			},
@@ -24,6 +18,12 @@
 		},
 		"annotations": [],
 		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "data/2.5/air_pollution/history?lat=42.361145&lon=-71.057083&start=@{dataset().start}&end=@{dataset().end}&appid=@{dataset().appid}",
+				"type": "Expression"
+			}
+		},
 		"schema": []
 	}
 }
