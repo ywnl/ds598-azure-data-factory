@@ -88,9 +88,6 @@
 											"value": "@div(sub(ticks(addDays(utcNow(), add(-360,mul(7, item())))), ticks('1970-01-01T00:00:00Z')), 10000000)",
 											"type": "Expression"
 										},
-										"lat": 42.361145,
-										"lon": -71.057083,
-										"type": "hour",
 										"appid": {
 											"value": "@activity('Web1').output.value",
 											"type": "Expression"
