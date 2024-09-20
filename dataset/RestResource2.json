@@ -1,0 +1,29 @@
+{
+	"name": "RestResource2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestAir",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"lat": {
+				"type": "float"
+			},
+			"lon": {
+				"type": "string"
+			},
+			"start": {
+				"type": "int"
+			},
+			"end": {
+				"type": "int"
+			},
+			"appid": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"schema": []
+	}
+}

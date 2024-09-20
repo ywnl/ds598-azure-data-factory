@@ -1,0 +1,41 @@
+{
+	"name": "RestResource1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "RestWeather",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"start": {
+				"type": "int"
+			},
+			"end": {
+				"type": "int"
+			},
+			"lat": {
+				"type": "float",
+				"defaultValue": 42.361145
+			},
+			"lon": {
+				"type": "float",
+				"defaultValue": -71.057083
+			},
+			"type": {
+				"type": "string",
+				"defaultValue": "hour"
+			},
+			"appid": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "data/2.5/history/city?lat=@{dataset().lat}&lon=@{dataset().lon}&type=@{dataset().type}&start=@{dataset().start}&end=@{dataset().end}&appid=@{dataset().appid}",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}
