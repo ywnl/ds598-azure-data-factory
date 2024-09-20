@@ -156,7 +156,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "bronze",
+						"folderPath": "bronze/AirPollution",
 						"fileSystem": "container1"
 					}
 				},
