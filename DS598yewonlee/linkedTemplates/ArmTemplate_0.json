@@ -132,7 +132,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"folderPath": "bronze",
+						"folderPath": "bronze/Weather",
 						"fileSystem": "container1"
 					}
 				},
