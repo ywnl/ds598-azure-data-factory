@@ -959,7 +959,7 @@
 						"     skipDuplicateMapOutputs: false) ~> weatherFlatten",
 						"weatherFlatten derive(corrected_timestamp = iif(length(toString(timestamp)) == 10,toInteger(timestamp), toInteger(null())),",
 						"          location = 'Boston') ~> weatherDerivedCol1",
-						"weatherDerivedCol1 filter(!isNull(temp) && !isNull(humidity) && notEquals(corrected_timestamp, toInteger(null()))) ~> weatherFilter",
+						"weatherDerivedCol1 filter(!isNull(temp) && !isNull(humidity) && !isNull(corrected_timestamp)) ~> weatherFilter",
 						"weatherFilter derive(date_time = toTimestamp(toLong(corrected_timestamp) * 1000),",
 						"          id = location + '_' + toString(corrected_timestamp),",
 						"          temp_C = round(temp - 273.15, 2),",
