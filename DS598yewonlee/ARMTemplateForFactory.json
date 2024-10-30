@@ -931,7 +931,7 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     documentForm: 'documentPerLine',",
-						"     wildcardPaths:['container1/bronze/Weather/*.json']) ~> weatherSource",
+						"     wildcardPaths:['*.json']) ~> weatherSource",
 						"weatherSource foldDown(unroll(list),",
 						"     mapColumn(",
 						"          message,",
