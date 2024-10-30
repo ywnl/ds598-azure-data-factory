@@ -67,7 +67,7 @@
 				"     skipDuplicateMapOutputs: false) ~> airFlatten",
 				"airFlatten derive(corrected_timestamp = iif(length(toString(dt)) == 10,toInteger(dt), toInteger(null())),",
 				"          location = 'Boston') ~> airDerivedCol1",
-				"airDerivedCol1 filter(!isNull(aqi) && notEquals(corrected_timestamp, toInteger(null()))) ~> airFilter",
+				"airDerivedCol1 filter(!isNull(aqi) && !isNull(corrected_timestamp)) ~> airFilter",
 				"airFilter derive(date_time = toTimestamp(toLong(corrected_timestamp) * 1000),",
 				"          id = location + '_' + toString(corrected_timestamp),",
 				"          co = round(co, 2),",
@@ -100,11 +100,13 @@
 				"airSelect sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
+				"     partitionFileNames:['silver_airpollution'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> airSink"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> airSink"
 			]
 		}
 	}
