@@ -1,0 +1,142 @@
+{
+	"name": "weatherDataflow",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Json1",
+						"type": "DatasetReference"
+					},
+					"name": "weatherSource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Parquet1",
+						"type": "DatasetReference"
+					},
+					"name": "weatherSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "weatherFlatten"
+				},
+				{
+					"name": "weatherDerivedCol1"
+				},
+				{
+					"name": "weatherFilter"
+				},
+				{
+					"name": "weatherDerivedCol2"
+				},
+				{
+					"name": "weatherSelect"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          message as string,",
+				"          cod as string,",
+				"          city_id as integer,",
+				"          calctime as double,",
+				"          cnt as integer,",
+				"          list as (dt as integer, main as (temp as double, feels_like as double, pressure as integer, humidity as integer, temp_min as double, temp_max as double), wind as (speed as double, deg as integer), clouds as (all as integer), weather as (id as integer, main as string, description as string, icon as string)[])[]",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine',",
+				"     wildcardPaths:['container1/bronze/Weather/*.json']) ~> weatherSource",
+				"weatherSource foldDown(unroll(list),",
+				"     mapColumn(",
+				"          message,",
+				"          cod,",
+				"          city_id,",
+				"          calctime,",
+				"          cnt,",
+				"          timestamp = list.dt,",
+				"          clouds_all = list.clouds.all,",
+				"          feels_like = list.main.feels_like,",
+				"          humidity = list.main.humidity,",
+				"          pressure = list.main.pressure,",
+				"          temp = list.main.temp,",
+				"          temp_max = list.main.temp_max,",
+				"          temp_min = list.main.temp_min,",
+				"          weather_description = list.weather.description,",
+				"          weather_icon = list.weather.icon,",
+				"          weather_id = list.weather.id,",
+				"          weather_main = list.weather.main,",
+				"          wind_deg = list.wind.deg,",
+				"          speed = list.wind.speed",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> weatherFlatten",
+				"weatherFlatten derive(corrected_timestamp = iif(length(toString(timestamp)) == 10,toInteger(timestamp), toInteger(null()))",
+				",",
+				"          location = 'Boston') ~> weatherDerivedCol1",
+				"weatherDerivedCol1 filter(!isNull(temp) && !isNull(humidity) && corrected_timestamp != toInteger(null())",
+				") ~> weatherFilter",
+				"weatherFilter derive(date_time = toTimestamp(toLong(corrected_timestamp) * 1000),",
+				"          id = location + '_' + toString(corrected_timestamp),",
+				"          temp_C = round(temp - 273.15, 2),",
+				"          temp_min_C = round(temp_min - 273.15, 2),",
+				"          temp_max_C = round(temp_max - 273.15, 2)",
+				",",
+				"          feels_like_C = round(feels_like - 273.15, 2)",
+				",",
+				"          feels_like_F = round((feels_like - 273.15) * 9 / 5 + 32, 2)",
+				",",
+				"          temp_min_F = round((temp_min - 273.15) * 9 / 5 + 32, 2)",
+				",",
+				"          temp_max_F = round((temp_max - 273.15) * 9 / 5 + 32, 2)",
+				",",
+				"          lon = -71.0589,",
+				"          lat = 42.3601,",
+				"          weather_id_value = toInteger(split(toString(weather_id[1]), ': ')[1]),",
+				"          weather_main_value = split(toString(weather_main[1]), ': ')[1],",
+				"          weather_description_value = split(toString(weather_description[1]), ': ')[1],",
+				"          weather_icon_value = split(toString(weather_icon[1]), ': ')[1]) ~> weatherDerivedCol2",
+				"weatherDerivedCol2 select(mapColumn(",
+				"          clouds_all,",
+				"          feels_like_K = feels_like,",
+				"          humidity,",
+				"          pressure,",
+				"          temp_K = temp,",
+				"          temp_max_K = temp_max,",
+				"          temp_min_K = temp_min,",
+				"          wind_deg,",
+				"          speed,",
+				"          corrected_timestamp,",
+				"          location,",
+				"          date_time,",
+				"          id,",
+				"          temp_C,",
+				"          temp_min_C,",
+				"          temp_max_C,",
+				"          feels_like_C,",
+				"          feels_like_F,",
+				"          temp_min_F,",
+				"          temp_max_F,",
+				"          lon,",
+				"          lat,",
+				"          weather_id_value",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> weatherSelect",
+				"weatherSelect sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> weatherSink"
+			]
+		}
+	}
+}
