@@ -46,7 +46,6 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     partitionRootPath: 'AirPollution',",
 				"     documentForm: 'documentPerLine',",
 				"     wildcardPaths:['bronze/AirPollution/*.json']) ~> airSource",
 				"airSource foldDown(unroll(list),",

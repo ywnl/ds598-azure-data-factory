@@ -50,6 +50,7 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
+				"     partitionRootPath: 'Weather',",
 				"     documentForm: 'documentPerLine',",
 				"     wildcardPaths:['bronze/Weather/*.json']) ~> weatherSource",
 				"weatherSource foldDown(unroll(list),",
