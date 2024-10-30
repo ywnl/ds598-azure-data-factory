@@ -839,7 +839,6 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
-						"     partitionRootPath: 'Weather',",
 						"     documentForm: 'documentPerLine',",
 						"     wildcardPaths:['bronze/Weather/*.json']) ~> weatherSource",
 						"weatherSource foldDown(unroll(list),",
@@ -868,7 +867,7 @@
 						"     skipDuplicateMapOutputs: false) ~> weatherFlatten",
 						"weatherFlatten derive(corrected_timestamp = iif(length(toString(timestamp)) == 10,toInteger(timestamp), toInteger(null())),",
 						"          location = 'Boston') ~> weatherDerivedCol1",
-						"weatherDerivedCol1 filter(!isNull(temp) && !isNull(humidity) && corrected_timestamp != toInteger(null())) ~> weatherFilter",
+						"weatherDerivedCol1 filter(!isNull(temp) && !isNull(humidity) && notEquals(corrected_timestamp, toInteger(null()))) ~> weatherFilter",
 						"weatherFilter derive(date_time = toTimestamp(toLong(corrected_timestamp) * 1000),",
 						"          id = location + '_' + toString(corrected_timestamp),",
 						"          temp_C = round(temp - 273.15, 2),",
@@ -912,13 +911,15 @@
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> weatherSelect",
 						"weatherSelect sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
+						"     validateSchema: true,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['silver_weather'],",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> weatherSink"
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> weatherSink"
 					]
 				}
 			},
