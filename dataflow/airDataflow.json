@@ -100,7 +100,7 @@
 				"airSelect sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
-				"     partitionFileNames:['silver_airpollution'],",
+				"     partitionFileNames:['silver_airpollution.parquet'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
